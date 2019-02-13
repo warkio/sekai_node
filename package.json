@@ -1,0 +1,25 @@
+{
+  "name": "sekai-node",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npm run run-migrations && node ./bin/www",
+    "create-migration": "node ./migrations/create_migration.js",
+    "run-migrations": "node ./migrations/run_migrations.js",
+    "create-model": "node ./create_model.js"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.3",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "http-errors": "^1.6.3",
+    "lodash.camelcase": "^4.3.0",
+    "lodash.snakecase": "^4.1.1",
+    "lodash.startcase": "^4.4.0",
+    "morgan": "~1.9.0",
+    "nunjucks": "^3.1.7",
+    "pg-promise": "^8.5.5",
+    "winston": "^3.2.0"
+  }
+}

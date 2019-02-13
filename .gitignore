@@ -1,0 +1,7 @@
+.idea/
+.vscode/
+config/development.js
+logs/*
+node_modules/
+
+!logs/.gitkeep
