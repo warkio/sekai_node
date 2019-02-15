@@ -1,6 +1,9 @@
+const { InvalidOperator, InvalidStructure } = require('../errors/model');
 const db = require('../lib/db');
 const snakeCase = require('lodash.snakecase');
 const camelCase = require('lodash.camelcase');
+
+const operators = [">", "<", "="];
 
 class BaseModel {
     constructor(conn){
@@ -146,15 +149,47 @@ class BaseModel {
     /**
      * Creates an object from a search. If no one is found,
      * returns null instead
-     * @param {string} column 
-     * @param {*} value 
+     * @param {findParams} Array<Array> Array of parameters, the structure is 
+     * [
+     *  ["left side", "operator", "right side"],
+     *  ["left side", "operator", "right side"],
+     *  ....
+     * ]
+     * All will be joined with "AND"
+     * @param {Connection} conn (optional) 
+     * @throws {InvalidOperator} If an invalid operator is passed
+     * @throws {InvalidParams} If he parameters structure is invalid
      * @returns either null or an instance of the class
      */
-    static async find(column, value, conn) {
+    static async find(findParams, conn) {
         if(conn !== undefined) {
             this.conn = conn;
         }
-        const res = await this.conn.query("SELECT * FROM  $1~ WHERE $2~=$3",[this.tableName, column, value]);
+        let query = "SELECT * FROM  $1~";
+        
+        let params = [this.tableName];
+
+        // There are extra parameters
+        if(findParams !== undefined && findParams !== null && findParams.length > 0 ) {
+            query += " WHERE";
+            for( let i=0; i<findParams.length; i++) {
+                // Validate content
+                if(findParams[i].constructor !== Array || findParams[i].length < 3) {
+                    throw new InvalidStructure("Parameter must be array and have 3 elements");
+                }
+                else if(operators.indexOf(findParams[i][1]) === -1) {
+                    throw new InvalidOperator("Invalid operator passed");
+                }
+                // Another one
+                if(i>0) {
+                    query += " AND";
+                }
+                params.push(findParams[i][0]);
+                params.push(findParams[i][2]);
+                query += ` $${params.length-1}~${findParams[i][1]}$${params.length}`;
+            }
+        }
+        const res = await this.conn.query(query, params);
         if(res.length === 0) {
             return null;
         }
@@ -170,16 +205,37 @@ class BaseModel {
      * @param {Integer} offset
      * @returns ?Array<Object>
      */
-    static async findAll(asJson, column, value, limit, offset, conn) {
+    static async findAll(asJson, findParams, limit, offset, conn) {
         if(conn !== undefined) {
             this.conn = conn;
         }
         const result = [];
-        let query = "SELECT * FROM  $1~ WHERE $2~=$3";
-        if(column === undefined && value === undefined) {
-            column = "true";
-            value = "true";
-            query = "SELECT * FROM $1~ WHERE $2=$3";
+        let query = "SELECT * FROM  $1~";
+        
+        let params = [this.tableName];
+
+        // There are extra parameters
+        if(findParams !== undefined && findParams !== null && findParams.length > 0 ) {
+            if( findParams.constructor !== Array ) {
+                throw new InvalidStructure("findParams needs to be an Array");
+            }
+            query += " WHERE";
+            for( let i=0; i<findParams.length; i++) {
+                // Validate content
+                if(findParams[i].constructor !== Array || findParams[i].length < 3) {
+                    throw new InvalidStructure("Parameter must be array and have 3 elements");
+                }
+                else if(operators.indexOf(findParams[i][1]) === -1) {
+                    throw new InvalidOperator("Invalid operator passed");
+                }
+                // Another one
+                if(i>0) {
+                    query += " AND";
+                }
+                params.push(findParams[i][0]);
+                params.push(findParams[i][2]);
+                query += ` $${params.length-1}~${findParams[i][1]}$${params.length}`;
+            }
         }
         if( limit !== undefined && limit !== null) {
             params.push(limit);
@@ -190,7 +246,7 @@ class BaseModel {
             query += " OFFSET $"+params.length;
         }
 
-        const res = await this.conn.query(query,[this.tableName, column, value]);
+        const res = await this.conn.query(query,params);
         for(let i=0;i<res.length;i++) {
             if(asJson){
                 let tempObj = {};

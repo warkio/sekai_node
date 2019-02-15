@@ -10,15 +10,13 @@ const db = require('../lib/db');
 /* GET home page. */
 router.get('/', async (req, res, next)=>{
     db.task(async t=>{
-        const categories = await CategoryModel.findAll(true, undefined, undefined, undefined, undefined, t);
-        console.log(categories.length);
+        const categories = await CategoryModel.findAll(true,null,null,null,t);
         for(let i=0; i<categories.length;i++) {
-            categories[i].sections = await SectionModel.findAll(true, "category_id", categories[i].id, undefined, undefined, t);
+            categories[i].sections = await SectionModel.findAll(true,[["category_id", "=",categories[i].id]], null, null, t);
             for(let j=0;j<categories[i].sections.length;j++){
                 categories[i].sections[j].isRead = await (await SectionModel.fromObject(categories[i].sections[j])).isRead(res.locals.user);
             }
         }
-        console.log(categories.length);
         return res.render('index', {categories});
     });
 
@@ -30,11 +28,21 @@ router.get('/', async (req, res, next)=>{
 router.get('/:categorySlug/', async (req, res, next)=>{
     console.log("here");
     db.task(async t => {
-        const category = await CategoryModel.find("slug", req.params.categorySlug, t);
+
+        const category = await CategoryModel.find([["slug","=",req.params.categorySlug]], t);
         if(category === null) {
-            return next(new Error("Invalid category"));
+            return next(404);
         }
-        const sections = await SectionModel.findAll(true, "category_id", category.id, undefined, undefined, t);
+        
+        const sections = await SectionModel.findAll(
+            true,
+            [
+                ["category_id", "=", category.id],
+            ],
+            null,
+            null,
+            t
+        );
         for( let i=0; i<sections.length; i++) {
             sections[i].isRead = await(await SectionModel.fromObject(sections[i])).isRead(res.locals.user);
         }
@@ -55,11 +63,14 @@ router.get('/:categorySlug/:sectionSlug/', async (req, res, next)=>{
         quantity = Math.min(Math.max(quantity, 10), 100);
         const offset = (page-1)*quantity;
     
-        const category = await CategoryModel.find("slug", req.params.categorySlug, t);
+        const category = await CategoryModel.find([["slug", "=",req.params.categorySlug]], t);
         // TODO - Add option to model to have multiple conditions in query
-        const section = await t.query(
-            "SELECT * FROM sections WHERE slug=$1 AND category_id=$2",
-            [req.params.sectionSlug, category.id]
+        const section = await SectionModel.find(
+            [
+                ["slug", "=", req.params.slug],
+                ["category_id", "=", category.id]
+            ],
+            t
         );
         if( section.length === 0 ) {
             next(404);
