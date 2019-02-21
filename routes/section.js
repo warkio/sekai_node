@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { SectionModel } = require('../models/category_model');
+const { SectionModel } = require('../models/section_model');
 const db = require('../lib/db');
 
-// TODO - Pass everything to models
-
 router.get('/', (req, res, next) => {
-
     db.task(async t => {
         // Page - quantity filters
         let page = isNaN(req.query.page)? 1 : req.query.page;
@@ -18,49 +15,23 @@ router.get('/', (req, res, next) => {
         const { name } = req.query;
         const { slug } = req.query;
         const categoryId = req.query["category-id"];
-
-        let query = "SELECT * FROM sections";
-        let queryCount = "SELECT count(id) FROM sections";
         const params = [];
+
         if(name !== undefined) {
-            params.push(name);
-            query += " WHERE name=$1";
-            queryCount += " WHERE name=$1";
+            params.push(["name", "=", name]);
         }
 
         if(slug !== undefined) {
-            if(params.length === 0) {
-                query += " WHERE";
-                queryCount += " WHERE";
-            }
-            else{
-                query += " AND";
-                queryCount += " AND";
-            }
-            params.push(slug);
-            query += " slug=$"+params.length;
-            queryCount += " slug=$"+params.length;
+            params.push(["slug", "=", slug]);
         }
 
         if(categoryId !== undefined) {
-            if(params.length === 0) {
-                query += " WHERE";
-                queryCount += " WHERE";
-            }
-            else{
-                query += " AND";
-                queryCount += " AND";
-            }
-            params.push(categoryId);
-            query += " category_id=$"+params.length;
-            queryCount += " category_id=$"+params.length;
+            params.push(["category_id", "=", categoryId]);
         }
-        const count = (await t.query(queryCount, params))[0].count;
-        params.push(quantity);
-        query += " LIMIT $"+params.length;
-        params.push(offset);
-        query += " OFFSET $"+params.length;
-        const result = await t.query(query, params);
+
+        const count = await SectionModel.count(params, t);
+        const result = await SectionModel.findAll(true, params, quantity, offset, t);
+
         return res.status(200).send({
             total: count,
             content: result
@@ -88,7 +59,18 @@ router.post('/', async (req, res, next) => {
         if(isNaN(categoryId) || name === undefined) {
             return res.status(400).send({error:"Category id and name are required"});
         }
-        const sectionExistence = (await t.query("SELECT id FROM sections WHERE name=$1 AND category_id=$2", [name, categoryId])).length > 0;
+        const sectionExistence = (await SectionModel.find(
+            [
+                [
+                    "name", "=", name
+                ],
+                [
+                    "category_id", "=", categoryId
+                ]
+            ],
+            t
+        )) !== null;
+
         if(sectionExistence) {
             return res.status(400).send({error:"A section with that name already exists in the category"});
         }
@@ -98,9 +80,13 @@ router.post('/', async (req, res, next) => {
         section.description = description;
         section.color = color;
         section.image = image;
-        await section.save();
-
-        return res.status(200).send({id: section.id});
+        section.save()
+            .then(()=>{
+                res.status(200).send({id: section.id});
+            })
+            .catch((err)=>{
+                next(err);
+            })
     });
 });
 
@@ -154,7 +140,20 @@ router.put('/:id', (req, res, next) => {
             ]
             
         }
-        const existence = (await db.query("SELECT id FROM sections WHERE category_id=$1 AND name=$2 AND id!=$3")).length > 0;
+        const existence = (await SectionModel.find(
+            [
+                [
+                    "name", "=", existenceParams[0]
+                ],
+                [
+                    "category_id", "=", existenceParams[1]
+                ],
+                [
+                    "id", "!=", existenceParams[2]
+                ]
+            ],
+            t
+        )) !== null;
 
         if(existence) {
             return res.status(400).send({error:"Invalid name and category id combination"});
@@ -172,8 +171,13 @@ router.put('/:id', (req, res, next) => {
         if(image !== undefined) {
             section.image = image;
         }
-        await section.save();
-        return res.status(200).send({success:true});
+        section.save()
+            .then(()=>{
+                res.status(200).send({success:true});
+            })
+            .catch((err)=>{
+                next(err);
+            })
     });
 });
 
@@ -189,8 +193,13 @@ router.delete('/:id', (req, res, next) => {
         if(section === null) {
             return res.status(400).send({error:"Invalid section"});
         }
-        await section.delete();
-        return res.status(200).send({success:true});
+        section.delete()
+            .then(()=>{
+                res.status(200).send({success:true});
+            })
+            .catch((err)=>{
+                next(err)
+            });
     });
 });
 

@@ -3,10 +3,8 @@ const router = express.Router();
 const { CategoryModel } = require('../models/category_model');
 const db = require('../lib/db');
 
-// TODO - Pass everything to models
 
 router.get('/', (req, res, next) => {
-
     db.task(async t => {
         // Page - quantity filters
         let page = isNaN(req.query.page)? 1 : req.query.page;
@@ -18,34 +16,17 @@ router.get('/', (req, res, next) => {
         const { name } = req.query;
         const { slug } = req.query;
 
-        let query = "SELECT * FROM categories";
-        let queryCount = "SELECT count(id) FROM categories";
         const params = [];
         if(name !== undefined) {
-            params.push(name);
-            query += " WHERE name=$1";
-            queryCount += " WHERE name=$1";
+            params.push(["name", "=", name]);
         }
 
         if(slug !== undefined) {
-            if(params.length === 0) {
-                query += " WHERE";
-                queryCount += " WHERE";
-            }
-            else{
-                query += " AND";
-                queryCount += " AND";
-            }
-            params.push(slug);
-            query += " slug=$"+params.length;
-            queryCount += " slug=$"+params.length;
+            params.push(["slug", "=", slug]);
         }
-        const count = (await t.query(queryCount, params))[0].count;
-        params.push(quantity);
-        query += " LIMIT $"+params.length;
-        params.push(offset);
-        query += " OFFSET $"+params.length;
-        const result = await t.query(query, params);
+        const count = await CategoryModel.count();
+        const result = await CategoryModel.findAll(true, params, quantity, offset, t);
+
         return res.status(200).send({
             total: count,
             content: result
@@ -64,11 +45,14 @@ router.post('/', async (req, res, next) => {
     db.task(async t => {
         // Parameters
         const { name } = req.body;
+        if(name === undefined) {
+            return res.status(400).send({error:"'name' is a required field"});
+        }
         const { description } = req.body;
         const { color } = req.body;
         const { image } = req.body;
         // No need to create a model to check that
-        const categoryExistence = (await t.query("SELECT id FROM categories WHERE name=$1", [name])).length > 0;
+        const categoryExistence = await CategoryModel.find([["name", "=", name]])
         if(categoryExistence) {
             return res.status(400).send({error:"A category with that name already exists"});
         }
@@ -106,6 +90,15 @@ router.put('/:id', (req, res, next) => {
             return res.status(400).send({error:"Invalid category"});
         }
         if(name !== undefined) {
+            const existence = await CategoryModel.find(
+                [
+                    ["name","=",name],
+                    ["id", "!=", id]
+                ]
+            )
+            if(existence) {
+                return res.status(400).send({error:"Can't change the category name to that one"});
+            }
             category.name = name;
         }
         if(description !== undefined) {
@@ -117,8 +110,13 @@ router.put('/:id', (req, res, next) => {
         if(image !== undefined) {
             category.image = image;
         }
-        await category.save();
-        return res.status(200).send({success:true});
+        category.save()
+            .then(()=>{
+                res.status(200).send({success:true});
+            })
+            .catch((err)=>{
+                next(err);
+            });
     });
 });
 
@@ -135,8 +133,13 @@ router.delete('/:id', (req, res, next) => {
         if(category === null) {
             return res.status(400).send({error:"Invalid category"});
         }
-        await category.delete();
-        return res.status(200).send({success:true});
+        category.delete()
+            .then(()=>{
+                res.status(200).send({success:true});
+            })
+            .catch((err)=>{
+                next(err);
+            })
     });
 });
 
