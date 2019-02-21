@@ -3,7 +3,7 @@ const db = require('../lib/db');
 const snakeCase = require('lodash.snakecase');
 const camelCase = require('lodash.camelcase');
 
-const operators = [">", "<", "="];
+const operators = [">", "<", "=", "!="," is ", " is not "];
 
 class BaseModel {
     constructor(conn){
@@ -197,10 +197,47 @@ class BaseModel {
     }
 
     /**
+     * Returns the total of elements in the database
+     * @param {Array<Array>} findParams Filters of the query
+     */
+    static async count(findParams, conn) {
+        if(conn !== undefined) {
+            this.conn = conn;
+        }
+
+        let query = "SELECT COUNT(*) FROM  $1~";
+        let params = [this.tableName];
+
+        if(findParams !== undefined && findParams !== null && findParams.length > 0 ) {
+            if( findParams.constructor !== Array ) {
+                throw new InvalidStructure("findParams needs to be an Array");
+            }
+            query += " WHERE";
+            for( let i=0; i<findParams.length; i++) {
+                // Validate content
+                if(findParams[i].constructor !== Array || findParams[i].length < 3) {
+                    throw new InvalidStructure("Parameter must be array and have 3 elements");
+                }
+                else if(operators.indexOf(findParams[i][1]) === -1) {
+                    throw new InvalidOperator("Invalid operator passed");
+                }
+                // Another one
+                if(i>0) {
+                    query += " AND";
+                }
+                params.push(findParams[i][0]);
+                params.push(findParams[i][2]);
+                query += ` $${params.length-1}~${findParams[i][1]}$${params.length}`;
+            }
+        }
+
+        return (await this.conn.query(query, params))[0].count;
+    }
+
+    /**
      * Returns all occurrences of a determined search
      * @param {Boolean} asJson specifies if the return value should be json or a class object
-     * @param {string} column 
-     * @param {*} value
+     * @param {Array<Array>} findParams
      * @param {Integer} limit
      * @param {Integer} offset
      * @returns ?Array<Object>
