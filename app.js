@@ -14,7 +14,7 @@ const categoryRouter = require('./routes/category');
 
 const app = express();
 
-app.set('view engine', 'html');
+app.set('view engine', 'njk');
 
 nunjucks.configure(path.join(__dirname, 'views'), {
     express: app,
