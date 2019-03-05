@@ -1,12 +1,8 @@
 const path = require('path');
+const crypto = require('crypto');
+
 function randomString(length) {
-    let text = "";
-    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/*";
-  
-    for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
+    return crypto.randomBytes(length).toString('base64').substr(0, length)
 }
 // 'LMBw5lt1KYIlF5IzSq2/Bkr8XKjOOuMpoN2uiySOgYSI4iI2krH3YfxIOB6Gq6IBNoWzuAfdo8soTeP5NFMC'
 
