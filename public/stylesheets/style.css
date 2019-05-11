@@ -1,0 +1,125 @@
+:root {
+	--page-background: #292929;
+	--default-foreground: #fff;
+	--default-font-size: 14px;
+
+	--main-header-background: #222;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background: var(--page-background);
+	color: var(--default-foreground);
+	font-size: var(--default-font-size);
+}
+
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+	color: var(--default-foreground);
+}
+
+#main-header {
+	--header-height: 100px;
+	--link-color-default: #999;
+	--link-color-current: #fff;
+
+	background: var(--main-header-background);
+}
+
+#main-header nav::after {
+	clear: both;
+	content: '';
+	display: block;
+}
+
+#main-header nav ul,
+#main-header nav ul li {
+	margin: 0;
+	padding: 0;
+}
+
+#main-header nav ul {
+	list-style-type: none;
+}
+
+#main-header nav ul:last-of-type {
+	float: right;
+}
+
+#main-header nav ul li {
+	float: left;
+	height: var(--header-height);
+	position: relative;
+}
+
+#main-header nav a,
+#main-header nav a:link,
+#main-header nav a:visited,
+#main-header nav a:hover,
+#main-header nav a:active {
+	color: var(--link-color-default);
+	display: inline-block;
+	text-decoration: none;
+	padding: .5em 1em;
+	top: 50%;
+	transform: translateY(-50%);
+	position: relative;
+}
+
+#main-header nav .active a,
+#main-header nav .active a:link,
+#main-header nav .active a:visited,
+#main-header nav .active a:hover,
+#main-header nav .active a:active {
+	color: var(--link-color-current);
+}
+
+.container {
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+@media (min-width: 768px) {
+	.container {
+		width: 750px;
+	}
+}
+@media (min-width: 992px) {
+	.container {
+		width: 970px;
+	}
+}
+@media (min-width: 1200px) {
+	.container {
+		width: 1170px;
+	}
+}
+
+main#categories section.category {
+	--border-color: var(--main-header-background);
+
+	margin-top: 70px;
+	border: 1px solid var(--border-color);
+}
+
+main#categories section.category > header {
+	background: var(--border-color);
+	font-weight: bold;
+	padding: .5em;
+	color: #bbb;
+}
+
+main#categories section.category table td[rowspan] {
+	width: 0;
+	white-space: nowrap;
+}
+main#categories section.category table td:not([rowspan]) {
+	width: 100%;
+}

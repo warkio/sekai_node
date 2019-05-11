@@ -1,0 +1,32 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+	<main id="categories" class="container">
+		{% for category in categories %}
+			<section class="category">
+				<header>
+					{{ category.name }}
+				</header>
+
+				<table>
+					{% for section in category.sections %}
+						<tbody>
+							<tr>
+								<td rowspan="2">
+									<!-- TODO: Image -->
+								</td>
+								<td>
+									<a href="{{pathPrefix}}/{{category.slug}}/{{section.slug}}">{{ section.name }}</a>
+								</td>
+								<td rowspan="2">TODO</td>
+							</tr>
+							<tr>
+								<td>{{ section.description }}</td>
+							</tr>
+						</tbody>
+					{% endfor %}
+				</table>
+			</section>
+		{% endfor %}
+	</main>
+{% endblock %}
