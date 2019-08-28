@@ -25,7 +25,7 @@ router.get('/', async (req, res, next)=>{
 /**
  * Just in case you want to see the sections in a separated page
  */
-router.get('/:categorySlug/', async (req, res, next)=>{
+router.get('/:categorySlug', async (req, res, next)=>{
     console.log("here");
     db.task(async t => {
 
@@ -54,7 +54,7 @@ router.get('/:categorySlug/', async (req, res, next)=>{
 /**
  * Get threads
  */
-router.get('/:categorySlug/:sectionSlug/', async (req, res, next)=>{
+router.get('/:categorySlug/:sectionSlug', async (req, res, next)=>{
 
     db.task(async t => {
         let page = isNaN(req.query.page)? 1 : req.query.page;
@@ -62,18 +62,18 @@ router.get('/:categorySlug/:sectionSlug/', async (req, res, next)=>{
         page = Math.max(page, 1);
         quantity = Math.min(Math.max(quantity, 10), 100);
         const offset = (page-1)*quantity;
-    
+
         const category = await CategoryModel.find([["slug", "=",req.params.categorySlug]], t);
         // TODO - Add option to model to have multiple conditions in query
         const section = await SectionModel.find(
             [
-                ["slug", "=", req.params.slug],
+                ["slug", "=", req.params.sectionSlug],
                 ["category_id", "=", category.id]
             ],
             t
         );
-        if( section.length === 0 ) {
-            next(404);
+        if( !section || section.length === 0 ) {
+            return next(404);
         }
         // Response object
         const threads = {
@@ -144,7 +144,8 @@ router.get('/:categorySlug/:sectionSlug/', async (req, res, next)=>{
                 }
             });
         }
-        res.render('index', {threads});
+
+        res.render('section', {threads});
     });
 
 });
