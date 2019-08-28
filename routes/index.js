@@ -17,7 +17,12 @@ router.get('/', async (req, res, next)=>{
                 categories[i].sections[j].isRead = await (await SectionModel.fromObject(categories[i].sections[j])).isRead(res.locals.user);
             }
         }
-        return res.render('index', {categories});
+
+        return res.render('index', {
+            categories: categories.sort((a, b) => (
+                (a.display_order|0) - (b.display_order|0)
+            )),
+        });
     });
 
 });
