@@ -1,4 +1,4 @@
-const { InvalidOperator, InvalidStructure } = require('../errors/model');
+const { InvalidOperator, InvalidStructure, InvalidParams } = require('../errors/model');
 const db = require('../lib/db');
 const snakeCase = require('lodash.snakecase');
 const camelCase = require('lodash.camelcase');
@@ -54,14 +54,18 @@ class BaseModel {
      * Saves the object into database,
      * it either performs an update or an insert,
      * depending on the value of the id attribute
+     * @param {Array<String>} toExclude Parameters to exclude from save
      */
-    async save() {
+    async save(toExclude=[]) {
         let query = "";
         let columns = Object.keys(this);
         this._deleteFromArray(columns, "hasTimestamp");
         this._deleteFromArray(columns, "tableName");
         this._deleteFromArray(columns, "id");
         this._deleteFromArray(columns, "conn");
+        for(let i=0;i<toExclude.length;i++) {
+            this._deleteFromArray(columns, toExclude[i]);
+        }
         // Doesn't have timestamp columns
         if(!this.hasTimestamp) {
             this._deleteFromArray(columns, "createdAt");
@@ -149,7 +153,7 @@ class BaseModel {
     /**
      * Creates an object from a search. If no one is found,
      * returns null instead
-     * @param {findParams} Array<Array> Array of parameters, the structure is 
+     * @param {Array<Array>} findParams Array of parameters, the structure is
      * [
      *  ["left side", "operator", "right side"],
      *  ["left side", "operator", "right side"],
@@ -199,6 +203,7 @@ class BaseModel {
     /**
      * Returns the total of elements in the database
      * @param {Array<Array>} findParams Filters of the query
+     * @param {Connection} conn Optional database connection 
      */
     static async count(findParams, conn) {
         if(conn !== undefined) {
@@ -240,9 +245,10 @@ class BaseModel {
      * @param {Array<Array>} findParams
      * @param {Integer} limit
      * @param {Integer} offset
+     * @param {Connection} conn Optional database connection 
      * @returns ?Array<Object>
      */
-    static async findAll(asJson, findParams, limit, offset, conn) {
+    static async findAll(asJson, findParams, limit, offset, conn, orderBy, orderPref) {
         if(conn !== undefined) {
             this.conn = conn;
         }
@@ -274,6 +280,11 @@ class BaseModel {
                 query += ` $${params.length-1}~${findParams[i][1]}$${params.length}`;
             }
         }
+        if(orderBy !== null && orderBy !== undefined && orderPref !== null && orderPref !== undefined) {
+            //params.push(orderBy);
+            query += " ORDER BY " + orderBy + " " + orderPref;
+        }
+
         if( limit !== undefined && limit !== null) {
             params.push(limit);
             query += " LIMIT $" + params.length;

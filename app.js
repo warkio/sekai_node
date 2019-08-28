@@ -74,11 +74,7 @@ app.use((req, res, next) => {
     });
 });
 
-app.use((req, res, next)=>{
-    console.log(res.locals.user);
-    next();
-});
-app.use('/api/category', categoryRouter);
+app.use('/category', categoryRouter);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
@@ -102,8 +98,8 @@ app.use((err, req, res, next) => {
         res.locals.error = err;
     }
 
-    res.status(status);
-    res.render('error');
+    res.status(status).send({error:err.message, stack: err.stack});
+    //res.render('error');
 });
 
 module.exports = app;

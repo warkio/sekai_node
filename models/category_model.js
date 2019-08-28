@@ -9,10 +9,11 @@ class CategoryModel extends BaseModel {
 
     async save() {
         this.slug = slugify(this.name);
+        let originalSlug = this.slug;
         let tempIndex = 0;
         let query = "";
         let params = [this.tableName, ""];
-        if(this.id !== undefined) {
+        if(this.id) {
             query = "SELECT id FROM $1~ WHERE slug=$2 AND id!=$3";
             params.push(this.id);
         }
@@ -22,7 +23,7 @@ class CategoryModel extends BaseModel {
         
         let sameSlug = false;
         do{
-            params[1] = tempIndex===0?this.slug : `${tempIndex}-${this.slug}`
+            params[1] = tempIndex===0? originalSlug : `${tempIndex}-${originalSlug}`;
             sameSlug = (await this.conn.query(
                 query,
                 params
@@ -32,10 +33,29 @@ class CategoryModel extends BaseModel {
             }
         }while(sameSlug);
         if(tempIndex !== 0) {
-            this.slug = `${tempIndex}-${this.slug}`;
+            this.slug = `${tempIndex}-${originalSlug}`;
         }
+        await super.save(['displayOrder']);
+    }
+
+    /**
+     *
+     * @param {Array<BigInt>} categories Array of category id in the new order
+     */
+    static async updateOrder(categories, conn) {
+        for(let i=0;i<categories.length;i++) {
+            await conn.query('UPDATE categories SET display_order=$1, updated_at=now() WHERE id=$2', [i+1, categories[i]]);
+        }
+    }
+
+    /**
+     * Deletes a category, and then proceeds to update the display order for all of them
+     */
+    async delete() {
+        const categoryId = this.id;
+        await super.delete();
+        await this.conn('UPDATE categories set display_order=(CASE WHEN display_order > $1 THEN display_order-1 WHEN display_order < $1 THEN display_order-1 END)', [categoryId]);
         
-        await super.save();
     }
 }
 

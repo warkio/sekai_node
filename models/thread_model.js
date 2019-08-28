@@ -8,6 +8,7 @@ class ThreadModel extends BaseModel {
     }
     async save() {
         this.slug = slugify(this.name);
+        let originalSlug = this.slug;
         let query = "";
         let params = [this.tableName, ""];
         if(this.id !== undefined) {
@@ -19,10 +20,8 @@ class ThreadModel extends BaseModel {
             query = "SELECT id FROM $1~ WHERE slug=$2";
         }
         let tempIndex = 0;
-        let sameSlug = false;
         do{
-            // Replace the slug with another possibility
-            params[1] = tempIndex===0?this.slug : `${tempIndex}-${this.slug}`;
+            params[1] = tempIndex===0? originalSlug : `${tempIndex}-${originalSlug}`;
             sameSlug = (await this.conn.query(
                 query,
                 params
@@ -32,7 +31,7 @@ class ThreadModel extends BaseModel {
             }
         }while(sameSlug);
         if(tempIndex !== 0) {
-            this.slug = `${tempIndex}-${this.slug}`;
+            this.slug = `${tempIndex}-${originalSlug}`;
         }
         
         super.save();

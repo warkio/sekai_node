@@ -11,6 +11,7 @@ class SectionModel extends BaseModel {
 
     async save() {
         this.slug = slugify(this.name);
+        let originalSlug = this.slug;
         let query = "";
         let tempIndex = 0;
         let params = [this.tableName, ""];
@@ -25,7 +26,7 @@ class SectionModel extends BaseModel {
         
         let sameSlug = false;
         do{
-            params[1] = tempIndex===0?this.slug : `${tempIndex}-${this.slug}`;
+            params[1] = tempIndex===0? originalSlug : `${tempIndex}-${originalSlug}`;
             sameSlug = (await this.conn.query(
                 query,
                 params
@@ -35,7 +36,7 @@ class SectionModel extends BaseModel {
             }
         }while(sameSlug);
         if(tempIndex !== 0) {
-            this.slug = `${tempIndex}-${this.slug}`;
+            this.slug = `${tempIndex}-${originalSlug}`;
         }
         
         await super.save();

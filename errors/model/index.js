@@ -20,7 +20,14 @@ class InvalidStructure extends ModelError {
     }
 }
 
+class InvalidParams extends ModelError {
+    constructor(message) {
+        super(message);
+    }
+}
+
 module.exports = {
     InvalidOperator,
-    InvalidStructure
-}
+    InvalidStructure,
+    InvalidParams
+};

@@ -2,9 +2,24 @@ const express = require('express');
 const router = express.Router();
 const { CategoryModel } = require('../models/category_model');
 const db = require('../lib/db');
+const validSort = ['id', 'display-order'];
+const possibleSort = ['asc', 'desc'];
 
-
+/**
+ * Get a determined quantity of categories
+ */
 router.get('/', (req, res, next) => {
+    let sort = 'display-order';
+    let sortOrder = 'asc';
+    if(req.query['order-by'] && validSort.includes(req.query['order-by'])) {
+        sort = req.query['order-by'];
+    }
+    if(req.query['order-type'] && possibleSort.includes(req.query['order-type'])) {
+        sortOrder = req.query['order-type'];
+    }
+    if(sort === 'display-order')  {
+        sort = 'display_order';
+    }
     db.task(async t => {
         // Page - quantity filters
         let page = isNaN(req.query.page)? 1 : req.query.page;
@@ -24,9 +39,34 @@ router.get('/', (req, res, next) => {
         if(slug !== undefined) {
             params.push(["slug", "=", slug]);
         }
-        const count = await CategoryModel.count();
-        const result = await CategoryModel.findAll(true, params, quantity, offset, t);
+        const count = await CategoryModel.count(null, t);
+        const result = await CategoryModel.findAll(true, params, quantity, offset, t, sort, sortOrder);
 
+        return res.status(200).send({
+            total: count,
+            content: result
+        });
+    });
+});
+
+/**
+ * Get all categories
+ */
+router.get('/all', (req, res, next) => {
+    let sort = 'display-order';
+    let sortOrder = 'asc';
+    if(req.query['order-by'] && validSort.includes(req.query['order-by'])) {
+        sort = req.query['order-by'];
+    }
+    if(req.query['order-type'] && possibleSort.includes(req.query['order-type'])) {
+        sortOrder = req.query['order-type'];
+    }
+    if(sort === 'display-order')  {
+        sort = 'display_order';
+    }
+    db.task(async t => {
+        const count = await CategoryModel.count(null, t);
+        const result = await CategoryModel.findAll(true, params, quantity, offset, t, sort, sortOrder);
         return res.status(200).send({
             total: count,
             content: result
@@ -52,7 +92,7 @@ router.post('/', async (req, res, next) => {
         const { color } = req.body;
         const { image } = req.body;
         // No need to create a model to check that
-        const categoryExistence = await CategoryModel.find([["name", "=", name]])
+        const categoryExistence = await CategoryModel.find([["name", "=", name]], t);
         if(categoryExistence) {
             return res.status(400).send({error:"A category with that name already exists"});
         }
@@ -64,6 +104,35 @@ router.post('/', async (req, res, next) => {
         await category.save();
 
         return res.status(200).send({id: category.id});
+    });
+});
+
+/**
+ * Updates the order of all categories
+ * @param {Array<<Object<String, String>>} categories array of categories to process 
+ * @returns {Object} result of the operation
+ */
+router.put('/order', (req, res, next) => {
+    db.task(async t => {
+        // Get all ids
+        const categoryIds = (await t.query('SELECT id FROM categories')).map(cat => cat.id);
+        const { categories } = req.body;
+        // Not all categories were sent
+        if(categories.length !== categoryIds.length) {
+            return res.status(400).send({error: 'Invalid categories sent here'});
+        }
+        // Check existence of all categories
+        for (let i=0; i<categories.length; i++) {
+            if ( !categoryIds.includes(categories[i] ) ) {
+                console.log('Db: ', categoryIds, ' desired: ', categories[i])
+                return res.status(400).send({error: 'Invalid categories sent'});
+            }
+        }
+        await CategoryModel.updateOrder(categories, t)
+            .catch((err) => {
+                next(err);
+            });
+        return res.status(200).send({success:true});
     });
 });
 
@@ -85,7 +154,7 @@ router.put('/:id', (req, res, next) => {
 
     db.task(async t => {
         const { id } = req.params;
-        const category = await CategoryModel.find("id", id, t);
+        const category = await CategoryModel.find([["id","=",id]], t);
         if(category === null) {
             return res.status(400).send({error:"Invalid category"});
         }
@@ -119,6 +188,8 @@ router.put('/:id', (req, res, next) => {
             });
     });
 });
+
+
 
 /**
  * Deletes a category
