@@ -4,24 +4,30 @@
 	<main id="categories" class="container">
 		{% for category in categories %}
 			<section class="category">
-				<header>
-					{{ category.name }}
-				</header>
-
 				<table>
+					<thead>
+						<tr>
+							<th class="table-title" colspan="2">{{category.name}}</th>
+							<th>Threads</th>
+							<th>Posts</th>
+							<th>Last post</th>
+						</tr>
+					</thead>
 					{% for section in category.sections %}
 						<tbody>
 							<tr>
 								<td rowspan="2">
 									<!-- TODO: Image -->
 								</td>
-								<td>
+								<td class="section-title-cell">
 									<a href="{{pathPrefix}}/{{category.slug}}/{{section.slug}}">{{ section.name }}</a>
 								</td>
 								<td rowspan="2">TODO</td>
+								<td rowspan="2">TODO</td>
+								<td rowspan="2">TODO</td>
 							</tr>
 							<tr>
-								<td>{{ section.description }}</td>
+								<td class="description-cell">{{ section.description }}</td>
 							</tr>
 						</tbody>
 					{% endfor %}

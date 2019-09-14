@@ -116,10 +116,42 @@ main#categories section.category > header {
 	color: #bbb;
 }
 
+main#categories section.category table th,
 main#categories section.category table td[rowspan] {
 	width: 0;
 	white-space: nowrap;
 }
+
 main#categories section.category table td:not([rowspan]) {
 	width: 100%;
+}
+
+main#categories section.category table th,
+main#categories section.category table td {
+	padding: .5em 1em;
+}
+
+main#categories section.category table td.description-cell {
+	padding-bottom: 1em;
+}
+
+main#categories section.category table {
+	border-collapse: collapse;
+}
+
+main#categories section.category table tbody tr td {
+	border: 1px solid #151515;
+}
+
+main#categories section.category table thead {
+	background: #151515;
+	text-align: left;
+}
+
+main#categories section.category table td.section-title-cell {
+	border-bottom: 0;
+}
+
+main#categories section.category table td.description-cell {
+	border-top: 0;
 }
