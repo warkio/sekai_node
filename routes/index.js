@@ -51,7 +51,7 @@ router.get('/:categorySlug', async (req, res, next)=>{
         for( let i=0; i<sections.length; i++) {
             sections[i].isRead = await(await SectionModel.fromObject(sections[i])).isRead(res.locals.user);
         }
-        return res.render('section', {sections});
+        return res.render('category', {sections});
     });
 
 });
@@ -127,8 +127,9 @@ router.get('/:categorySlug/:sectionSlug', async (req, res, next)=>{
         // Threads
         for(let i=0; i<threadsQuery.length; i++) {
             let lastPostUser = (await t.query("SELECT id, username FROM users WHERE id=$1",[threadsQuery[i].user_id]))[0];
-            let lastPostDate = (await t.query("SELECT created_at FROM posts WHERE id=$1", [threadsQuery[i].id]))[0].created_at;
-            threads.pinned.push({
+            let lastPostDate = (await t.query("SELECT created_at FROM posts WHERE thread_id=$1", [threadsQuery[i].id]))[0].created_at;
+            threads.normal.count++;
+            threads.normal.content.push({
                 id: threadsQuery[i].id,
                 name: threadsQuery[i].name,
                 slug: threadsQuery[i].slug,
@@ -150,7 +151,11 @@ router.get('/:categorySlug/:sectionSlug', async (req, res, next)=>{
             });
         }
 
-        res.render('section', {threads});
+        res.render('section', {
+            category,
+            section,
+            threads,
+        });
     });
 
 });
