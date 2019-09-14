@@ -1,14 +1,25 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>{{res.locals.title}}</title>
-    </head>
-    <body>
-        <ul>
-        {% for section in sections %}
-            <h2>{{section.name}}</h2>
-            <p>{{section.id}}</p>
-        {% endfor %}
-        </ul>
-    </body>
-</html>
+{% extends "layout.njk" %}
+
+{% block title %}
+	{{section.name}} ({{category.name}}) | {{title}}
+{% endblock %}
+
+{% block content %}
+	<main id="section" class="container">
+		<header>
+			{{ section.name }}
+		</header>
+
+		<table>
+			<tbody>
+			{% for thread in threads.normal.content %}
+				<tr>
+					<td>
+						{{ thread.name }}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</main>
+{% endblock %}

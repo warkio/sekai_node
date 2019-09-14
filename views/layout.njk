@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, notranslate, noimageindex">
-	<title>{{title}}</title>
+	<title>{% block title %}{{title}}{% endblock %}</title>
 	<link rel="stylesheet" href="{{pathPrefix}}/stylesheets/normalize.css">
 	<link rel="stylesheet" href="{{pathPrefix}}/stylesheets/style.css">
 </head>
