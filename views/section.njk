@@ -7,16 +7,31 @@
 {% block content %}
 	<main id="section" class="container">
 		<header>
-			{{ section.name }}
+			<h2>{{ section.name }}</h2>
 		</header>
 
-		<table>
+		{% if threads.pinned.length > 0 %}
+			<!-- TODO -->
+		{% endif %}
+
+		<table class="threads-table normal-threads">
+			<thead>
+				<tr>
+					<th colspan="2"></th>
+					<th>Author</th>
+					<th>Last post</th>
+				</tr>
+			</thead>
 			<tbody>
 			{% for thread in threads.normal.content %}
 				<tr>
 					<td>
-						{{ thread.name }}
 					</td>
+					<td>
+						<a href="/{{category.slug}}/{{section.slug}}/{{thread.slug}}">{{ thread.name }}</a>
+					</td>
+					<td></td>
+					<td></td>
 				</tr>
 			{% endfor %}
 			</tbody>

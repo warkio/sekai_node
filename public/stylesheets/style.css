@@ -10,10 +10,13 @@
 	box-sizing: border-box;
 }
 
+html, body {
+	font-size: var(--default-font-size);
+}
+
 body {
 	background: var(--page-background);
 	color: var(--default-foreground);
-	font-size: var(--default-font-size);
 }
 
 a,
@@ -154,4 +157,27 @@ main#categories section.category table td.section-title-cell {
 
 main#categories section.category table td.description-cell {
 	border-top: 0;
+}
+
+main#section header h2 {
+	font-size: 2rem;
+	font-weight: normal;
+}
+
+main#section table.threads-table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+main#section table.threads-table thead tr th,
+main#section table.threads-table tbody tr td {
+	border: 1px solid #151515;
+	padding: .5em 1em;
+}
+
+main#section table.threads-table thead tr th,
+main#section table.threads-table tbody tr td:first-of-type {
+	white-space: nowrap;
+	text-align: left;
+	width: 0;
 }
