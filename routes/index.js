@@ -85,6 +85,7 @@ router.get('/:categorySlug/:sectionSlug', async (req, res, next)=>{
             pinned: [],
             normal: {
                 total: 0,
+                perPage: quantity,
                 content: []
             }
         };
@@ -120,7 +121,8 @@ router.get('/:categorySlug/:sectionSlug', async (req, res, next)=>{
                         id: lastPostUser.id,
                         name: lastPostUser.username
                     },
-                    date: lastPostDate
+                    date: lastPostDate,
+                    dateStr: JSON.parse(JSON.stringify(lastPostDate))
                 }
             });
         }
@@ -146,7 +148,8 @@ router.get('/:categorySlug/:sectionSlug', async (req, res, next)=>{
                         id: lastPostUser.id,
                         name: lastPostUser.username
                     },
-                    date: lastPostDate
+                    date: lastPostDate,
+                    dateStr: JSON.parse(JSON.stringify(lastPostDate))
                 }
             });
         }

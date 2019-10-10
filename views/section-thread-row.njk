@@ -1,0 +1,16 @@
+<tr>
+	<td class="thread-title">
+		<a href="{{pathPrefix}}/{{category.slug}}/{{section.slug}}/{{thread.slug}}">Thread title</a>
+		<p class="thread-author">by <a href="#">Username N/A</a></p>
+	</td>
+	<td class="thread-last-post-information">
+		<ul>
+			<li>
+				<a href="{{pathPrefix}}/{{category.slug}}/{{section.slug}}/{{thread.slug}}#{{thread.lastPost.id}}">
+					{{thread.lastPost.dateStr}}
+				</a>
+			</li>
+			<li>(<a href="#">{{thread.lastPost.user.name}}</a>)</li>
+		</ul>
+	</td>
+</tr>

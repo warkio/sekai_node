@@ -5,36 +5,81 @@
 {% endblock %}
 
 {% block content %}
-	<main id="section" class="container">
-		<header>
-			<h2>{{ section.name }}</h2>
-		</header>
+	<section id="forum">
+		<h2>{{section.name}}</h2>
 
-		{% if threads.pinned.length > 0 %}
-			<!-- TODO -->
+		<ul class="breadcrumb">
+			<li>
+				<a href="{{pathPrefix}}/">{{title}}</a>
+			</li>
+			<li>{{section.name}}</li>
+		</ul>
+
+		{% if user %}
+			<ul class="button-list">
+				<li>
+					<a href="user-thread-create.html">New thread</a>
+				</li>
+			</ul>
 		{% endif %}
 
-		<table class="threads-table normal-threads">
-			<thead>
-				<tr>
-					<th colspan="2"></th>
-					<th>Author</th>
-					<th>Last post</th>
-				</tr>
-			</thead>
-			<tbody>
-			{% for thread in threads.normal.content %}
-				<tr>
-					<td>
-					</td>
-					<td>
-						<a href="/{{category.slug}}/{{section.slug}}/{{thread.slug}}">{{ thread.name }}</a>
-					</td>
-					<td></td>
-					<td></td>
-				</tr>
-			{% endfor %}
-			</tbody>
-		</table>
-	</main>
+		{% if threads.pinned.length > 0 %}
+			<section id="pinned-threads" class="threads">
+				<h3>Pinned threads</h3>
+
+				<table>
+					<tbody>
+
+						{% for thread in threads.pinned %}
+							{% include "section-thread-row.njk" %}
+						{% endfor %}
+
+					</tbody>
+				</table>
+			</section>
+		{% endif %}
+
+		<section id="normal-threads" class="threads">
+			<h3>Threads</h3>
+
+			{% if threads.normal.content.length > 0 %}
+				<table>
+					<tbody>
+
+						{% for thread in threads.normal.content %}
+							{% include "section-thread-row.njk" %}
+						{% endfor %}
+
+					</tbody>
+				</table>
+			{% else %}
+				No threads.
+			{% endif %}
+
+		</section>
+
+		<ul class="pagination">
+			<li>
+				<a href="user-forum.html">«</a>
+			</li>
+			<li class="current">
+				<span>1</span>
+			</li>
+			<li>
+				<a href="user-forum.html">2</a>
+			</li>
+			<li>
+				<a href="user-forum.html">3</a>
+			</li>
+			<li>
+				<span>...</span>
+			</li>
+			<li>
+				<a href="user-forum.html">10</a>
+			</li>
+			<li>
+				<a href="user-forum.html">»</a>
+			</li>
+		</ul>
+	</section>
 {% endblock %}

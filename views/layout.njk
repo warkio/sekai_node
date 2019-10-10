@@ -1,18 +1,21 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, notranslate, noimageindex">
 	<title>{% block title %}{{title}}{% endblock %}</title>
-	<link rel="stylesheet" href="{{pathPrefix}}/stylesheets/normalize.css">
-	<link rel="stylesheet" href="{{pathPrefix}}/stylesheets/style.css">
+	<link rel="stylesheet" href="{{pathPrefix}}/vendor/normalize.css">
+	<link rel="stylesheet" href="{{pathPrefix}}/vendor/glyphicons.css">
+	<link rel="stylesheet" href="{{pathPrefix}}/styles.css">
 </head>
 <body>
-	{% include "header.njk" %}
+	<div id="everything">
+		{% include "header.njk" %}
 
-	{% block content %}
-	{% endblock %}
-
-	{% include "footer.njk" %}
+		<main>
+			{% block content %}
+			{% endblock %}
+		</main>
+	</div>
 </body>
 </html>

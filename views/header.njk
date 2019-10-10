@@ -1,18 +1,30 @@
-<header id="main-header">
-	<nav class="container">
+<header>
+	<nav>
 		<ul>
-			<li class="active">
+			<li class="current">
 				<a href="{{pathPrefix}}/">Home</a>
 			</li>
 		</ul>
 
-		<ul>
-			<li>
-				<a href="{{pathPrefix}}/users/register">Register</a>
-			</li>
-			<li>
-				<a href="{{pathPrefix}}/users/login">Log in</a>
-			</li>
+		<ul class="right">
+			{% if user %}
+				<li>
+					<a href="{{pathPrefix}}/users/register">Register</a>
+				</li>
+				<li>
+					<a href="{{pathPrefix}}/users/login">Login</a>
+				</li>
+			{% else %}
+				<li>
+					<a href="{{pathPrefix}}/user/account">Username</a>
+				</li>
+				<li>
+					<a href="{{pathPrefix}}/user/account">Account</a>
+				</li>
+				<li>
+					<a href="{{pathPrefix}}/user/logout">Logout</a>
+				</li>
+			{% endif %}
 		</ul>
 	</nav>
 </header>

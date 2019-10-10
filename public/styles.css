@@ -1,0 +1,657 @@
+:root {
+	--color-1: #222;
+	--color-2: #111;
+	--color-3: #ccc;
+	--color-4: #2d2d2d;
+	--color-5: #9b9b9b;
+	--color-6: #202020;
+	--color-7: #0b0b0b;
+
+	--page-background: var(--color-1);
+	--wrapper-background: var(--color-2);
+	--text-color: var(--color-3);
+	--header-background: var(--color-4);
+
+	--input-background: var(--color-6);
+	--input-color: var(--color-3);
+	--input-border-color: var(--color-7);
+
+	--button-background: var(--input-border-color);
+	--button-color: var(--color-3);
+
+	--thread-border-color: var(--color-6);
+
+	--thread-button-background: var(--color-4);
+
+	--post-border-color: var(--color-6);
+
+	--header-link-height: 3rem;
+	--header-link-background-inactive: transparent;
+	--header-link-background-active: var(--color-2);
+	--header-height: calc(4 * var(--header-link-height));
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	font-size: 16px;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: var(--page-background);
+	color: var(--text-color);
+	font-family: Ubuntu, sans-serif;
+}
+
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
+	color: var(--text-color);
+}
+
+#everything {
+	display: grid;
+	min-height: 100vh;
+	margin: 0;
+	padding: 50px 0 0 0;
+	grid-template-columns: 1;
+	grid-template-rows: var(--header-height) 1fr;
+
+	--content-width: 1000px;
+}
+
+#everything > header,
+#everything > main {
+	margin: 0 auto;
+	width: var(--content-width);
+}
+
+#everything > header {
+	background: var(--header-background);
+}
+
+#everything > header nav {
+	padding-top: calc(var(--header-height) - var(--header-link-height));
+}
+
+#everything > header nav ul,
+#everything > header nav ul li {
+	margin: 0;
+	padding: 0;
+	display: inline-block;
+}
+
+#everything > header nav ul.right {
+	float: right;
+}
+
+#everything > header nav ul li a,
+#everything > header nav ul li a:link,
+#everything > header nav ul li a:visited,
+#everything > header nav ul li a:hover,
+#everything > header nav ul li a:active {
+	text-decoration: none;
+	margin: 0;
+	padding: 0 1rem;
+	line-height: var(--header-link-height);
+	display: inline-block;
+	background: var(--header-link-background-inactive);
+}
+
+#everything > header nav ul li.current a,
+#everything > header nav ul li.current a:link,
+#everything > header nav ul li.current a:visited,
+#everything > header nav ul li.current a:hover,
+#everything > header nav ul li.current a:active {
+	background: var(--header-link-background-active);
+}
+
+#everything > main {
+	background: var(--wrapper-background);
+	margin-bottom: 100px;
+	padding: 50px 50px;
+}
+
+#everything > main section#forums .forum-category {
+	margin: 50px 1rem;
+}
+
+#everything > main section#forums .forum-category h2 {
+	font-size: 1.3rem;
+	font-weight: normal;
+	margin: 1rem 0;
+	padding: 0;
+}
+
+#everything > main section#forums .forum-category table thead th {
+	white-space: nowrap;
+	text-align: left;
+}
+
+#everything > main section#forums .forum-category table tbody tr td.forum-status-icon {
+	white-space: nowrap;
+	min-width: 4rem;
+	min-height: 4rem;
+	position: relative;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#everything > main section#forums .forum-category table tbody tr.forum-status-read td.forum-status-icon * {
+	opacity: .2;
+}
+
+#everything > main section#forums .forum-category table tbody tr td.forum-status-icon .glyphicon {
+	text-align: center;
+	display: inline-block;
+}
+
+#everything > main section#forums .forum-category table tbody tr td.forum-name {
+	width: 100%;
+	font-size: 1rem;
+}
+
+#everything > main section#forums .forum-category table tbody tr td.forum-name a,
+#everything > main section#forums .forum-category table tbody tr td.forum-name a:link,
+#everything > main section#forums .forum-category table tbody tr td.forum-name a:visited,
+#everything > main section#forums .forum-category table tbody tr td.forum-name a:hover,
+#everything > main section#forums .forum-category table tbody tr td.forum-name a:active {
+	text-decoration: none;
+}
+
+#everything > main section#forums .forum-category table tbody tr td.forum-name p.description {
+	font-size: .8em;
+}
+
+#everything > main section#forums .forum-category table tbody tr td.forum-last-thread-information {
+	width: 0;
+	white-space: nowrap;
+	font-size: .8em;
+	opacity: .6;
+}
+
+#everything > main section#forums .forum-category table tbody tr td.forum-last-thread-information ul,
+#everything > main section#forums .forum-category table tbody tr td.forum-last-thread-information ul li {
+	margin: 0;
+	padding: 0;
+}
+
+#everything > main section#forums .forum-category table tbody tr td.forum-last-thread-information ul {
+	list-style-type: none;
+}
+
+#everything > main section#forums .forum-category table tbody tr td.forum-last-thread-information ul li {
+	margin: .4em 0;
+}
+
+#everything > main section form textarea,
+#everything > main section form input[type="text"],
+#everything > main section form input[type="password"] {
+	padding: .5rem 1rem;
+	background: var(--input-background);
+	color: var(--input-color);
+	border: 2px dashed var(--input-border-color);
+}
+
+#everything > main section form button {
+	background: var(--button-background);
+	border-radius: 2px;
+	border: 2px solid transparent;
+	color: var(--button-color);
+	cursor: pointer;
+	padding: .5rem 1rem;
+}
+
+#everything > main section form .error {
+	color: #ff4136;
+}
+
+#everything > main section#login {
+	height: 100%;
+	position: relative;
+}
+
+#everything > main section#login form {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	width: 400px;
+}
+
+#everything > main section#login form input,
+#everything > main section#login form button {
+	display: block;
+	width: 100%;
+	line-height: 2rem;
+	margin: 1rem 0;
+}
+
+#everything > main section#register form,
+#everything > main section#user-account form {
+	width: 80%;
+	margin: 50px auto 0 auto;
+	display: grid;
+	grid-template-columns: fit-content(30%) 1fr;
+	grid-template-rows: 1fr;
+	grid-gap: 1rem;
+}
+
+#everything > main section#register form > div,
+#everything > main section#user-account form > div {
+	position: relative;
+}
+
+#everything > main section#register form > div label,
+#everything > main section#user-account form > div label {
+	text-align: right;
+	margin-top: 2px;
+	display: block;
+	height: 100%;
+	line-height: 2rem;
+}
+
+#everything > main section#register form > div input,
+#everything > main section#register form > div button,
+#everything > main section#user-account form > div input,
+#everything > main section#user-account form > div button {
+	display: block;
+	width: 100%;
+}
+
+#everything > main section#user-account form .user-avatar {
+	border: 2px dotted var(--post-border-color);
+	height: auto;
+	max-width: 200px;
+}
+
+#everything > main > section ul.breadcrumb,
+#everything > main > section ul.breadcrumb li {
+	margin: 0;
+	padding: 0;
+}
+
+#everything > main > section ul.breadcrumb {
+	list-style-type: none;
+	font-size: .9em;
+	opacity: .8;
+}
+
+#everything > main > section ul.breadcrumb li {
+	display: inline-block;
+}
+
+#everything > main > section ul.breadcrumb li + li::before {
+	content: '»';
+	display: inline-block;
+	padding: 0 .5rem;
+}
+
+#everything > main > section ul.breadcrumb li a,
+#everything > main > section ul.breadcrumb li a:link,
+#everything > main > section ul.breadcrumb li a:visited,
+#everything > main > section ul.breadcrumb li a:hover,
+#everything > main > section ul.breadcrumb li a:active {
+	text-decoration: none;
+}
+
+#everything > main > section > ul.breadcrumb + *,
+#everything > main > section > ul.button-list + section,
+#everything > main > section > section + section {
+	margin-top: 50px;
+}
+
+#everything > main section#forum > section.threads table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+#everything > main section#forum > section.threads table tbody tr {
+	border: 1px solid var(--thread-border-color);
+}
+
+#everything > main section#forum > section.threads table tbody tr td {
+	padding: .5rem;
+}
+
+#everything > main section#forum > section.threads table tbody tr td.thread-title p.thread-author {
+	font-size: .8em;
+	margin: 3px 0 0 0;
+	padding: 0;
+}
+
+#everything > main section#forum > section.threads table tbody tr td.thread-last-post-information {
+	width: 0;
+	white-space: nowrap;
+	font-size: .8em;
+	opacity: .6;
+}
+
+#everything > main section#forum > section.threads table tbody tr td.thread-last-post-information ul,
+#everything > main section#forum > section.threads table tbody tr td.thread-last-post-information ul li {
+	margin: 0;
+	padding: 0;
+}
+
+#everything > main section#forum > section.threads table tbody tr td.thread-last-post-information ul li {
+	display: inline-block;
+}
+
+#everything > main section ul.pagination,
+#everything > main section ul.pagination li {
+	margin: 0;
+	padding: 0;
+}
+
+#everything > main section ul.pagination {
+	margin-top: 30px;
+	list-style-type: none;
+	float: right;
+}
+
+#everything > main section ul.pagination li {
+	margin: 0 3px;
+	display: inline-block;
+}
+
+#everything > main section ul.pagination li span,
+#everything > main section ul.pagination li a,
+#everything > main section ul.pagination li a:link,
+#everything > main section ul.pagination li a:visited,
+#everything > main section ul.pagination li a:hover,
+#everything > main section ul.pagination li a:active {
+	padding: 0 .5rem;
+	line-height: 2rem;
+	border: 1px solid var(--thread-border-color);
+	display: inline-block;
+	text-decoration: none;
+}
+
+#everything > main section ul.pagination li span {
+	border-color: transparent;
+}
+
+#everything > main section ul.pagination li.current span,
+#everything > main section ul.pagination li.current a,
+#everything > main section ul.pagination li.current a:link,
+#everything > main section ul.pagination li.current a:visited,
+#everything > main section ul.pagination li.current a:hover,
+#everything > main section ul.pagination li.current a:active {
+	background: var(--thread-border-color);
+}
+
+#everything > main section#forum > ul.button-list,
+#everything > main section#forum > ul.button-list li,
+#everything > main section#thread > ul.button-list,
+#everything > main section#thread > ul.button-list li {
+	margin: 0;
+	padding: 0;
+}
+
+#everything > main section#forum > ul.button-list,
+#everything > main section#thread > ul.button-list {
+	list-style-type: none;
+	margin: 2rem 0;
+}
+
+#everything > main section#forum > ul.button-list li,
+#everything > main section#thread > ul.button-list li {
+	display: inline-block;
+}
+
+#everything > main section#forum > ul.button-list li + li,
+#everything > main section#thread > ul.button-list li + li {
+	margin-left: 1rem;
+}
+
+#everything > main section#forum > ul.button-list li a,
+#everything > main section#forum > ul.button-list li a:link,
+#everything > main section#forum > ul.button-list li a:visited,
+#everything > main section#forum > ul.button-list li a:hover,
+#everything > main section#forum > ul.button-list li a:active,
+#everything > main section#thread > ul.button-list li a,
+#everything > main section#thread > ul.button-list li a:link,
+#everything > main section#thread > ul.button-list li a:visited,
+#everything > main section#thread > ul.button-list li a:hover,
+#everything > main section#thread > ul.button-list li a:active {
+	background: var(--thread-button-background);
+	border-radius: 2px;
+	border: 2px solid transparent;
+	color: var(--button-color);
+	cursor: pointer;
+	padding: .5rem 1rem;
+	text-decoration: none;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post,
+#everything > main section#thread-reply article.thread-post {
+	--actions-height: 2rem;
+	--post-header-height: 2rem;
+
+	border: 1px solid var(--post-border-color);
+	display: grid;
+	min-height: 100px;
+	width: 100%;
+	font-size: .9rem;
+
+	grid-template-rows:
+		min(min-content, var(--post-header-height))
+		minmax(100px, max-content)
+		minmax(0, min-content)
+		min(min-content, var(--actions-height))
+	;
+
+	grid-template-columns:
+		.8fr
+		1fr
+		1fr
+		1fr
+	;
+
+
+	grid-template-areas:
+		'author header header header'
+		'author content content content'
+		'author signature signature signature'
+		'author actions actions actions'
+	;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post + article.thread-post,
+#everything > main section#thread-reply article.thread-post + article.thread-post {
+	margin-top: 80px;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > *,
+#everything > main section#thread-reply article.thread-post > * {
+	padding: 1rem;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .user-information,
+#everything > main section#thread-reply article.thread-post > .user-information {
+	grid-area: author;
+	border-right: 1px solid var(--post-border-color);
+}
+#everything > main section#thread > section#thread-posts article.thread-post > .post-content,
+#everything > main section#thread-reply article.thread-post > .post-content {
+	grid-area: content;
+	line-height: 1.7em;
+}
+#everything > main section#thread > section#thread-posts article.thread-post > .user-signature,
+#everything > main section#thread-reply article.thread-post > .user-signature {
+	grid-area: signature;
+	max-height: 100px;
+	border-top: 1px dashed var(--post-border-color);
+	font-size: .8em;
+	line-height: 1.5em;
+}
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions,
+#everything > main section#thread-reply article.thread-post > .post-actions {
+	grid-area: actions;
+	font-size: .8rem;
+	border-top: 1px solid var(--post-border-color);
+	padding: 0;
+}
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header,
+#everything > main section#thread-reply article.thread-post > .post-header {
+	grid-area: header;
+	font-size: .8rem;
+	border-bottom: 1px dashed var(--post-border-color);
+	padding: 0;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .post-content > p,
+#everything > main section#thread > section#thread-posts article.thread-post > .user-signature > p,
+#everything > main section#thread-reply article.thread-post > .post-content > p,
+#everything > main section#thread-reply article.thread-post > .user-signature > p {
+	margin: 0;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .post-content > p + p,
+#everything > main section#thread > section#thread-posts article.thread-post > .user-signature > p + p,
+#everything > main section#thread-reply article.thread-post > .post-content > p + p,
+#everything > main section#thread-reply article.thread-post > .user-signature > p + p {
+	margin-top: 1em;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .user-signature > * {
+	opacity: .7;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions ul,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions ul li,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li,
+#everything > main section#thread-reply article.thread-post > .post-actions ul,
+#everything > main section#thread-reply article.thread-post > .post-actions ul li,
+#everything > main section#thread-reply article.thread-post > .post-header ul,
+#everything > main section#thread-reply article.thread-post > .post-header ul li {
+	margin: 0;
+	padding: 0;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions ul,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul,
+#everything > main section#thread-reply article.thread-post > .post-actions ul,
+#everything > main section#thread-reply article.thread-post > .post-header ul {
+	list-style-type: none;
+	float: right;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions ul li,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li,
+#everything > main section#thread-reply article.thread-post > .post-actions ul li,
+#everything > main section#thread-reply article.thread-post > .post-header ul li {
+	display: inline-block;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions ul li a,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions ul li a:link,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions ul li a:visited,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions ul li a:hover,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-actions ul li a:active,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a:link,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a:visited,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a:hover,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a:active,
+#everything > main section#thread-reply article.thread-post > .post-actions ul li a,
+#everything > main section#thread-reply article.thread-post > .post-actions ul li a:link,
+#everything > main section#thread-reply article.thread-post > .post-actions ul li a:visited,
+#everything > main section#thread-reply article.thread-post > .post-actions ul li a:hover,
+#everything > main section#thread-reply article.thread-post > .post-actions ul li a:active,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a:link,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a:visited,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a:hover,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a:active {
+	display: inline-block;
+	line-height: var(--actions-height);
+	text-decoration: none;
+	padding: 0 1em;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a:link,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a:visited,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a:hover,
+#everything > main section#thread > section#thread-posts article.thread-post > .post-header ul li a:active,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a:link,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a:visited,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a:hover,
+#everything > main section#thread-reply article.thread-post > .post-header ul li a:active {
+	opacity: .8;
+	font-size: .8em;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .user-information .user-avatar,
+#everything > main section#thread-reply article.thread-post > .user-information .user-avatar {
+	width: 100%;
+	border: 2px dotted var(--post-border-color);
+	height: auto;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .user-information a.user-link,
+#everything > main section#thread > section#thread-posts article.thread-post > .user-information a.user-link:link,
+#everything > main section#thread > section#thread-posts article.thread-post > .user-information a.user-link:visited,
+#everything > main section#thread > section#thread-posts article.thread-post > .user-information a.user-link:hover,
+#everything > main section#thread > section#thread-posts article.thread-post > .user-information a.user-link:active,
+#everything > main section#thread-reply article.thread-post > .user-information a.user-link,
+#everything > main section#thread-reply article.thread-post > .user-information a.user-link:link,
+#everything > main section#thread-reply article.thread-post > .user-information a.user-link:visited,
+#everything > main section#thread-reply article.thread-post > .user-information a.user-link:hover,
+#everything > main section#thread-reply article.thread-post > .user-information a.user-link:active {
+	display: block;
+	padding: 1em 0;
+	text-align: center;
+	text-decoration: none;
+}
+
+#everything > main section#thread > section#thread-posts article.thread-post > .user-information a.user-link:hover,
+#everything > main section#thread-reply article.thread-post > .user-information a.user-link:hover {
+	text-decoration: underline;
+}
+
+#everything > main section#thread-reply > form {
+	width: 100%;
+	margin: 50px auto 0 auto;
+	display: grid;
+	grid-template-columns: fit-content(20%) 1fr;
+	grid-template-rows: 1fr;
+	grid-gap: 1rem;
+}
+
+#everything > main section#thread-reply > form > div {
+	position: relative;
+}
+
+#everything > main section#thread-reply > form > div label {
+	text-align: right;
+	margin-top: 2px;
+	display: block;
+	height: 100%;
+	line-height: 2rem;
+}
+
+#everything > main section#thread-reply > form > div input,
+#everything > main section#thread-reply > form > div textarea,
+#everything > main section#thread-reply > form > div button {
+	display: block;
+	width: 100%;
+}
+
+#everything > main section#thread-reply > form > div textarea {
+	min-height: 300px;
+}
+
+#everything > main section#thread-reply hr.original-post-separator {
+	margin: 50px 0;
+	border: 1px solid var(--post-border-color);
+}

@@ -1,38 +1,49 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-	<main id="categories" class="container">
+	<section id="forums">
 		{% for category in categories %}
-			<section class="category">
+			<section class="forum-category">
+				<h2>{{category.name}}</h2>
+
 				<table>
 					<thead>
 						<tr>
-							<th class="table-title" colspan="2">{{category.name}}</th>
-							<th>Threads</th>
-							<th>Posts</th>
-							<th>Last post</th>
+							<th></th>
+							<th></th>
+							<th>Last thread</th>
 						</tr>
 					</thead>
-					{% for section in category.sections %}
-						<tbody>
-							<tr>
-								<td rowspan="2">
-									<!-- TODO: Image -->
+					<tbody>
+						{% for section in category.sections %}
+							<!-- Change icon based on read status. -->
+							{% if section.isRead %}
+							<tr class="forum-status-read">
+							{% else %}
+							<tr class="forum-status-unread">
+							{% endif %}
+								<td class="forum-status-icon">
+									<span class="glyphicon glyphicon-align-left" aria-hidden="true"></span>
 								</td>
-								<td class="section-title-cell">
-									<a href="{{pathPrefix}}/{{category.slug}}/{{section.slug}}">{{ section.name }}</a>
+								<td class="forum-name">
+									<a href="{{pathPrefix}}/{{category.slug}}/{{section.slug}}">
+										{{section.name}}
+									</a>
+									<p class="description">{{section.description}}</p>
 								</td>
-								<td rowspan="2">0</td>
-								<td rowspan="2">0</td>
-								<td rowspan="2">N/A</td>
+								<td class="forum-last-thread-information">
+									<ul>
+										<li><a href="guest-thread.html">Some random thread</a></li>
+										<li>by <a href="#">username</a></li>
+										<li>at <a href="guest-thread.html#postid">2012-12-21 00:00:00 UTC</a></li>
+									</ul>
+								</td>
 							</tr>
-							<tr>
-								<td class="description-cell">{{ section.description }}</td>
-							</tr>
-						</tbody>
-					{% endfor %}
+						{% endfor %}
+					</tbody>
 				</table>
 			</section>
 		{% endfor %}
-	</main>
+
+	</section>
 {% endblock %}
